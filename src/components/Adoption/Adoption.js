@@ -7,6 +7,7 @@ import './Adoption.css';
 
 import AnimalHTML from '../AnimalHTML/AnimalHTML';
 import PeopleHTML from '../PeopleHTML/PeopleHTML';
+import config from '../../config';
 
 export default function Pets() {
   const history = useHistory();
@@ -27,7 +28,7 @@ export default function Pets() {
   // useEffect for fetching data
   useEffect(() => {
     // get people
-    fetch('http://localhost:8000/people')
+    fetch(`${config.API_ENDPOINT}/people`)
       .then((res) => {
         return res.json();
       })
@@ -36,7 +37,7 @@ export default function Pets() {
         setPeople(data);
       });
     // get pets
-    fetch('http://localhost:8000/pets')
+    fetch(`${config.API_ENDPOINT}/pets`)
       .then((res) => {
         return res.json();
       })
