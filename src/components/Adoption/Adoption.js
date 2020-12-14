@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 
+import Config from '../../config';
+
 import './Adoption.css';
 
 import AnimalHTML from '../AnimalHTML/AnimalHTML';
@@ -46,7 +48,7 @@ export default function Pets() {
 
   useEffect(() => {
     if (isSubmit) {
-      fetch('http://localhost:8000/people')
+      fetch(`${Config.API_ENDPOINT}/people`)
         .then((res) => {
           return res.json();
         })
@@ -78,7 +80,7 @@ export default function Pets() {
       type: e.target.value,
     };
     console.log(payLoad);
-    fetch('http://localhost:8000/pets', {
+    fetch(`${Config.API_ENDPOINT}/pets`, {
       method: 'DELETE',
       headers: {
         'content-type': 'application/json',
@@ -110,7 +112,7 @@ export default function Pets() {
     let payload = {
       person: person,
     };
-    return fetch('http://localhost:8000/people', {
+    return fetch(`${Config.API_ENDPOINT}/people`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
