@@ -1,0 +1,30 @@
+.pet-container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
+
+.animal-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+}
+
+.animal-image {
+  border-radius: 5px;
+}
+
+.animal-card {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  margin-top: 3%;
+}
+
+.pet-container p, h3 {
+  margin: 0;
+}
