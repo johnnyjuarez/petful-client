@@ -33,7 +33,6 @@ export default function Pets() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setPeople(data);
       });
     // get pets
@@ -54,7 +53,6 @@ export default function Pets() {
           return res.json();
         })
         .then((data) => {
-          console.log(data);
           setPeople(data);
           setIsSubmit(false);
         });
@@ -81,7 +79,6 @@ export default function Pets() {
     let payLoad = {
       type: e.target.value,
     };
-    console.log(payLoad);
     fetch(`${Config.API_ENDPOINT}/pets`, {
       method: 'DELETE',
       headers: {
@@ -93,7 +90,6 @@ export default function Pets() {
         history.push(0);
         // slice 0, arr.l
         let newPeopleArr = [...people].pop();
-        console.log(newPeopleArr);
         res.text();
       })
       .catch((err) => {
