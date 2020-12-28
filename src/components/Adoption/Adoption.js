@@ -61,19 +61,20 @@ export default function Pets() {
     }
   }, [isSubmit]);
 
-  if (countDown) {
-    if (people.length > 1) {
-      setTimeout(() => {
-        let mutatePeople = [...people];
-        mutatePeople.shift();
-        console.log(mutatePeople);
-        setPeople(mutatePeople);
-        if (mutatePeople.length == 1) {
-          setLastPerson(true);
-        }
-      }, 5000);
+  useEffect(() => {
+    let interval;
+    if (countDown) {
+      if (people.length > 1) {
+        interval = setInterval(() => {
+          setPeople(people.slice(1));
+        }, 5000);
+      } else if (people.length === 1) {
+        setLastPerson(true);
+      }
+      return () => clearInterval(interval);
     }
-  }
+  }, [people]);
+
   // 5 second line imitation
 
   const adoptHandler = (e) => {
@@ -90,12 +91,10 @@ export default function Pets() {
     })
       .then((res) => {
         history.push(0);
+        // slice 0, arr.l
         let newPeopleArr = [...people].pop();
         console.log(newPeopleArr);
         res.text();
-      })
-      .then((res) => {
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
