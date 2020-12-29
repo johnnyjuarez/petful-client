@@ -116,7 +116,6 @@ export default function Pets() {
     let arrOfTypes = ['cat', 'dog'];
     let randomTypeSelect =
       arrOfTypes[Math.floor(Math.random() * arrOfTypes.length)];
-    console.log(randomTypeSelect);
     let payload = {
       type: randomTypeSelect,
     };
@@ -137,7 +136,7 @@ export default function Pets() {
     let payLoad = {
       type: e.target.value,
     };
-    console.log(e.target.value);
+
     fetch(`${Config.API_ENDPOINT}/pets`, {
       method: 'DELETE',
       headers: {
