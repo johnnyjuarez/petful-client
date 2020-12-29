@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 
 import Config from '../../config';
@@ -20,6 +20,7 @@ export default function Pets() {
   // state for pet objects
   const [cat, setCat] = useState({});
   const [dog, setDog] = useState({});
+  const [allPeople, updateAllPeople] = useState([]);
   const [people, setPeople] = useState([]);
   const [person, setPerson] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
@@ -27,14 +28,8 @@ export default function Pets() {
   const [countDown, setCountDown] = useState(false);
   // useEffect for fetching data
   useEffect(() => {
-    // get people
-    fetch(`${config.API_ENDPOINT}/people`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPeople(data);
-      });
+    getPeople();
+
     // get pets
     fetch(`${config.API_ENDPOINT}/pets`)
       .then((res) => {
@@ -46,6 +41,18 @@ export default function Pets() {
       });
   }, []);
 
+  const getPeople = (cb = () => {}) => {
+    fetch(`${config.API_ENDPOINT}/people`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setPeople(data);
+        cb();
+      });
+  };
+
+  /**
   useEffect(() => {
     if (isSubmit) {
       fetch(`${Config.API_ENDPOINT}/people`)
@@ -72,6 +79,36 @@ export default function Pets() {
       return () => clearInterval(interval);
     }
   }, [people]);
+  /**/
+
+  // When I am at the front of the line,
+  // a new user should be added to the line
+  // behind me every five seconds until there
+  // are a total of five users in line.
+  /**
+  const startAddingPeople = (count = 0) => {
+    setTimeout(() => {
+      setPeople([...people, allPeople.slice(count, 1)]);
+      if (people.length < 6) {
+        startAddingPeople(++count);
+      }
+    }, 1000);
+  };
+  /**/
+
+  // When the user add their remove peple from queue.
+  const startDeletingPeople = (people) => {
+    setTimeout(() => {
+      const cur = people.slice(1);
+      setPeople(cur);
+      if (people.length > 1) {
+        startDeletingPeople(cur);
+      } else if (people.length === 1) {
+        setLastPerson(true);
+        // startAddingPeople();
+      }
+    }, 1000);
+  };
 
   // 5 second line imitation
 
@@ -104,7 +141,6 @@ export default function Pets() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
     let payload = {
       person: person,
     };
@@ -119,6 +155,7 @@ export default function Pets() {
       setPerson('');
       setIsSubmit(true);
       setCountDown(true);
+      getPeople(() => startDeletingPeople(people));
       return res.json();
     });
   };
