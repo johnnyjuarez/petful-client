@@ -25,17 +25,22 @@ export default function Pets() {
   const [isSubmit, setIsSubmit] = useState(false);
   const [lastPerson, setLastPerson] = useState(false);
   const [countDown, setCountDown] = useState(false);
-  // useEffect for fetching data
-  useEffect(() => {
-    // get people
+
+  /*
+   * Functions for fetches
+   */
+  const getPeople = () => {
     fetch(`${config.API_ENDPOINT}/people`)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
         setPeople(data);
+        setIsSubmit(false);
       });
-    // get pets
+  };
+
+  const getPets = () => {
     fetch(`${config.API_ENDPOINT}/pets`)
       .then((res) => {
         return res.json();
@@ -44,41 +49,95 @@ export default function Pets() {
         setCat(data.cat);
         setDog(data.dog);
       });
+  };
+
+  const addPeople = (person) => {
+    let payload = { person };
+    fetch(`${Config.API_ENDPOINT}/people`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }).then(() => {
+      getPeople();
+    });
+  };
+
+  // useEffect for fetching data
+  useEffect(() => {
+    // get people
+    getPeople();
+    // get pets
+    getPets();
   }, []);
 
   useEffect(() => {
     if (isSubmit) {
-      fetch(`${Config.API_ENDPOINT}/people`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setPeople(data);
-          setIsSubmit(false);
-        });
+      getPeople();
     }
   }, [isSubmit]);
 
   useEffect(() => {
     let interval;
+    let addInterval;
     if (countDown) {
       if (people.length > 1) {
         interval = setInterval(() => {
-          setPeople(people.slice(1));
+          randomAdopt();
+          // setPeople(people.slice(1));
         }, 5000);
       } else if (people.length === 1) {
+        setCountDown(false);
         setLastPerson(true);
+        let arrOfPeople = [
+          'Bob Burgeoise',
+          'Jerry Duck',
+          'Gary Winthorpe',
+          'David Doe',
+          'John Smith',
+        ];
+        addInterval = setInterval(() => {
+          addPeople(arrOfPeople[0]);
+          arrOfPeople.shift();
+        }, 5000);
       }
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval, addInterval);
+      };
     }
   }, [people]);
 
   // 5 second line imitation
 
+  // function to handle random deletes/adopts
+  const randomAdopt = () => {
+    let arrOfTypes = ['cat', 'dog'];
+    let randomTypeSelect =
+      arrOfTypes[Math.floor(Math.random() * arrOfTypes.length)];
+    console.log(randomTypeSelect);
+    let payload = {
+      type: randomTypeSelect,
+    };
+    fetch(`${Config.API_ENDPOINT}/pets`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }).then(() => {
+      getPeople();
+      getPets();
+      setLastPerson(false);
+    });
+  };
+
   const adoptHandler = (e) => {
     let payLoad = {
       type: e.target.value,
     };
+    console.log(e.target.value);
     fetch(`${Config.API_ENDPOINT}/pets`, {
       method: 'DELETE',
       headers: {
@@ -87,10 +146,10 @@ export default function Pets() {
       body: JSON.stringify(payLoad),
     })
       .then((res) => {
-        history.push(0);
-        // slice 0, arr.l
-        let newPeopleArr = [...people].pop();
-        res.text();
+        // getPeople();
+        // getPets();
+        // setLastPerson(false);
+        history.push('/congratulations');
       })
       .catch((err) => {
         console.log(err);

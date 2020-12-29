@@ -7,9 +7,9 @@ function AnimalHTML(props) {
   let lastPerson = props.lastPersonProp;
   let adoptHandler = props.adopt;
   let catHTML;
-  const onClickHandler = () => {
-    adoptHandler();
-  };
+  // const onClickHandler = () => {
+  //   adoptHandler();
+  // };
   if (cat) {
     catHTML = (
       <div className='cat animal-container'>
@@ -21,7 +21,11 @@ function AnimalHTML(props) {
           <p>{cat.age}</p>
           <p>{cat.breed}</p>
           <p>{cat.story}</p>
-          <button disabled={!lastPerson} value='cat' onClick={onClickHandler}>
+          <button
+            disabled={!lastPerson}
+            value='cat'
+            onClick={(e) => props.adopt(e)}
+          >
             Adopt
           </button>
         </div>
